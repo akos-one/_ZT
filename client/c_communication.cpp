@@ -27,19 +27,6 @@ BOOL Setup(LPCSTR routineName) {
 	return TRUE;
 }
 
-PVOID GetBaseAddress(DWORD processID) {
-	Communication request = {};
-	SecureZeroMemory(&request, sizeof(Communication));
-
-	request.Request = Request::GETBASE;
-	request.Reason = 0x4D524E;
-	request.processID = processID;
-	request.Outbase = 0;
-
-	NtCompareSigningLevels(&request, 0);
-	return request.Outbase;
-}
-
 
 
 
@@ -105,7 +92,22 @@ DWORD GetProcessID(LPCWSTR processName) {
 
 
 namespace driver {
-	PVOID RVM(DWORD processID, PVOID imageBase, PVOID address) {
+
+	PVOID GetBaseAddress(DWORD processID, PVOID* baseAddress) {
+		Communication request = {};
+		SecureZeroMemory(&request, sizeof(Communication));
+
+		request.Request = Request::GETBASE;
+		request.Reason = 0x4D524E;
+		request.processID = processID;
+		request.Outbase = 0;
+
+		NtCompareSigningLevels(&request, 0);
+		*baseAddress = request.Outbase;
+		return baseAddress;
+	}
+
+	PVOID RVM(DWORD processID, PVOID imageBase, PVOID address, PVOID* result) {
 		Communication request = {};
 		SecureZeroMemory(&request, sizeof(Communication));
 
@@ -117,7 +119,8 @@ namespace driver {
 
 
 		NtCompareSigningLevels(&request, 0);
-		return request.result;
+		*result = request.result;
+		return result;
 	}
 
 	PVOID WVM(DWORD processID, PVOID imageBase, PVOID address) {

@@ -37,14 +37,14 @@ struct Communication {
 
 
 BOOL Setup(LPCSTR routineName);
-PVOID GetBaseAddress(DWORD processID);
 
 
 
 
 
 namespace driver {
-	PVOID RVM(DWORD processID, PVOID imageBase, PVOID address);
+	PVOID GetBaseAddress(DWORD processID, PVOID* baseAddress);
+	PVOID RVM(DWORD processID, PVOID imageBase, PVOID address, PVOID* result);
 	PVOID WVM(DWORD processID, PVOID imageBase, PVOID address);
 	PVOID UNLOAD();
 }
