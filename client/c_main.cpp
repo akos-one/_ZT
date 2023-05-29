@@ -31,7 +31,7 @@ int main()
 		return 0;
 	}
 
-	auto base = GetBaseAddress(procID);
+	PVOID base = GetBaseAddress(procID);
 	if (!base) {
 		cout << "[MRN] failed to get base address\n";
 		cout << "[MRN] failed base: " << base << endl;
